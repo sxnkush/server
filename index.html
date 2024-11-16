@@ -12,7 +12,7 @@
     <script>
         async function fetchBPM() {
             try {
-                const response = await fetch('http://localhost:3000/getBPM');
+                const response = await fetch('/getBPM');
                 const bpm = await response.text();
                 document.getElementById('bpm').innerText = bpm;
             } catch (error) {
@@ -23,6 +23,5 @@
         // Fetch BPM every second
         setInterval(fetchBPM, 1000);
     </script>
-    <script src="Node.js"></script>
 </body>
 </html>
