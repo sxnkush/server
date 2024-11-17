@@ -11,17 +11,18 @@
 
     <script>
         async function fetchBPM() {
-            try {
-                const response = await fetch('/getBPM');
-                const bpm = await response.text();
-                document.getElementById('bpm').innerText = bpm;
-            } catch (error) {
-                console.error('Error fetching BPM:', error);
-            }
-        }
+  try {
+    const response = await fetch('https://bpm-hmv9.onrender.com/getBPM');
+    const data = await response.json();
+    document.getElementById('bpm').innerText = data.bpm || '--';
+  } catch (error) {
+    console.error('Error fetching BPM:', error);
+  }
+}
 
-        // Fetch BPM every second
-        setInterval(fetchBPM, 1000);
+// Fetch BPM every second
+setInterval(fetchBPM, 1000);
+
     </script>
 </body>
 </html>
