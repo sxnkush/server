@@ -4,25 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Rate Monitor</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+<style>
+    /* Reset some default styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container to center content */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Card styling */
+.card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Title styling */
+.title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* BPM display styling */
+.bpm-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.label {
+    font-size: 20px;
+    color: #555;
+    margin-right: 10px;
+}
+
+.bpm-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2ecc71; /* Green color for the BPM value */
+}
+
+/* Status text */
+.status {
+    font-size: 18px;
+    color: #888;
+}
+
+</style>
 <body>
-    <h1>Real-Time Heart Rate Monitor</h1>
-    <p>BPM: <span id="bpm">--</span></p>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">Real-Time Heart Rate Monitor</h1>
+            <div class="bpm-display">
+                <span class="label">Current BPM:</span>
+                <span id="bpm" class="bpm-value">--</span>
+            </div>
+            <p class="status">Monitoring...</p>
+        </div>
+    </div>
 
     <script>
         async function fetchBPM() {
-  try {
-    const response = await fetch('https://bpm-hmv9.onrender.com/getBPM');
-    const data = await response.json();
-    document.getElementById('bpm').innerText = data.bpm || '--';
-  } catch (error) {
-    console.error('Error fetching BPM:', error);
-  }
-}
+            try {
+                const response = await fetch('https://bpm-hmv9.onrender.com/getBPM');
+                const data = await response.json();
+                document.getElementById('bpm').innerText = data.bpm;
+            } catch (error) {
+                console.error('Error fetching BPM:', error);
+            }
+        }
 
-// Fetch BPM every second
-setInterval(fetchBPM, 1000);
-
+        // Fetch BPM every second
+        setInterval(fetchBPM, 1000);
     </script>
 </body>
 </html>
