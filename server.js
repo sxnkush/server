@@ -3,7 +3,7 @@ const { SerialPort } = require('serialport'); // Import SerialPort
 const { ReadlineParser } = require('@serialport/parser-readline'); // Import ReadlineParser
 
 const app = express();
-const PORT = 3000; // Port for the web server
+const PORT = process.env.PORT || 3000; // Use environment port or default to 3000
 
 // Middleware for JSON parsing and enabling CORS
 app.use(express.json());
@@ -13,20 +13,33 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serial Port Setup
-const serialPort = new SerialPort({
-  path: 'COM4', // Replace with your Arduino's port (e.g., COM3 on Windows)
-  baudRate: 115200
-});
-
-const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\n' }));
-
 let bpmData = '--'; // Variable to store BPM data
 
-// Listen for data from Arduino
-parser.on('data', (data) => {
-  console.log(`Received from Arduino: ${data}`);
-  bpmData = data.trim(); // Update BPM data after trimming unnecessary whitespace
+// Only set up SerialPort if running locally
+if (!process.env.IS_DEPLOYED) {
+  const serialPort = new SerialPort({
+    path: 'COM4', // Replace with your Arduino's port (e.g., COM3 on Windows)
+    baudRate: 115200
+  });
+
+  const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\n' }));
+
+  // Listen for data from Arduino
+  parser.on('data', (data) => {
+    console.log(`Received from Arduino: ${data}`);
+    bpmData = data.trim(); // Update BPM data after trimming unnecessary whitespace
+  });
+
+  serialPort.on('error', (err) => {
+    console.error('Error with SerialPort:', err.message);
+  });
+}
+
+// API Endpoint to Update BPM Data (used by local script)
+app.post('/updateBPM', (req, res) => {
+  bpmData = req.body.bpm; // Update BPM with data sent by local script
+  console.log(`Updated BPM: ${bpmData}`);
+  res.sendStatus(200); // Respond with success
 });
 
 // API Endpoint to Get BPM Data
